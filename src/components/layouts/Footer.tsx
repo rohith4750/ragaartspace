@@ -18,6 +18,9 @@ export default function Footer() {
               <Link href="/" className="hover:text-brand-accent transition-colors">Art Gallery</Link>
             </li>
             <li>
+              <Link href="/blog" className="hover:text-brand-accent transition-colors">Video Meditations (Blog)</Link>
+            </li>
+            <li>
               <Link href="/orders/track" className="hover:text-brand-accent transition-colors">Order Tracking</Link>
             </li>
             <li>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ShoppingBag, LayoutDashboard, LogOut, Compass } from 'lucide-react';
+import { ShoppingBag, LayoutDashboard, LogOut, Compass, Play } from 'lucide-react';
 import { useCart } from '@/store/useCart';
 import { useSession, signOut } from 'next-auth/react';
 
@@ -27,6 +27,10 @@ export default function Navbar() {
           <Link href="/" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
             <Compass className="w-4 h-4" />
             GALLERY
+          </Link>
+          <Link href="/blog" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
+            <Play className="w-4 h-4" />
+            BLOG
           </Link>
           <Link href="/orders/track" className="hover:text-brand-accent transition-colors">
             TRACK ORDER
