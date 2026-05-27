@@ -1,6 +1,6 @@
 // src/app/admin/layout.tsx
-import Head from "next/head";
 "use client";
+import Head from "next/head";
 
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AuthProvider from "@/components/providers/AuthProvider";
