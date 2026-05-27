@@ -37,9 +37,11 @@ export default function Navbar() {
             <Play className="w-4 h-4" />
             BLOG
           </Link>
-          <Link href="/orders/track" className="hover:text-brand-accent transition-colors">
-            TRACK ORDER
-          </Link>
+          {session && (
+            <Link href="/orders/track" className="hover:text-brand-accent transition-colors">
+              TRACK ORDER
+            </Link>
+          )}
           {session && (
             <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
               <LayoutDashboard className="w-4 h-4" />

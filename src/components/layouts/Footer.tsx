@@ -1,7 +1,12 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export default function Footer() {
+  const { data: session } = useSession();
+
   return (
     <footer className="w-full bg-brand-light border-t border-[#EAE3DB] py-12 px-6 mt-auto">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -27,9 +32,11 @@ export default function Footer() {
             <li>
               <Link href="/blog" className="hover:text-brand-accent transition-colors">Video Meditations (Blog)</Link>
             </li>
-            <li>
-              <Link href="/orders/track" className="hover:text-brand-accent transition-colors">Order Tracking</Link>
-            </li>
+            {session && (
+              <li>
+                <Link href="/orders/track" className="hover:text-brand-accent transition-colors">Order Tracking</Link>
+              </li>
+            )}
           </ul>
         </div>
         <div>
