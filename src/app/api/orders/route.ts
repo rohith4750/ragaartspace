@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
+import { sendOrderEmail } from '@/lib/mail';
 
 export async function GET(request: NextRequest) {
   try {
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Run order placement in a transaction to prevent race conditions on stock deduction
-    const order = await prisma.$transaction(async (tx) => {
+    const { newOrder, artwork } = await prisma.$transaction(async (tx) => {
       const artwork = await tx.artwork.findUnique({
         where: { id: artworkId },
       });
@@ -70,10 +71,15 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      return newOrder;
+      return { newOrder, artwork };
     });
 
-    return NextResponse.json(order, { status: 201 });
+    // Fire email booking confirmation asynchronously so it doesn't block the API response
+    sendOrderEmail(newOrder, artwork).catch((err) => {
+      console.error('Failed to send order booking email:', err);
+    });
+
+    return NextResponse.json(newOrder, { status: 201 });
   } catch (error: any) {
     console.error('Error creating order:', error);
     return NextResponse.json({ error: error.message || 'Failed to create order' }, { status: 400 });
