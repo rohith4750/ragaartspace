@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
 import { sendOrderEmail } from '@/lib/mail';
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Run order placement in a transaction to prevent race conditions on stock deduction
-    const { newOrder, artwork } = await prisma.$transaction(async (tx) => {
+    const { newOrder, artwork } = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const artwork = await tx.artwork.findUnique({
         where: { id: artworkId },
       });

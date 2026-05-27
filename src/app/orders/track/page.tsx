@@ -1,15 +1,31 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export default function OrderTrackPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [orderId, setOrderId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login?callbackUrl=/orders/track');
+    }
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-brand-accent" />
+      </div>
+    );
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

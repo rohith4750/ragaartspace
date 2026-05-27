@@ -1,8 +1,10 @@
 import { prisma } from '@/lib/prisma';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, Package, Truck, CheckCircle, Sparkles, MapPin, Phone, Mail, FileText } from 'lucide-react';
 import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function OrderPage({ params }: Props) {
   const { id } = await params;
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect(`/login?callbackUrl=/orders/${id}`);
+  }
+
   const order = await prisma.order.findUnique({
     where: { id },
     include: {
@@ -28,6 +36,13 @@ export default async function OrderPage({ params }: Props) {
   });
 
   if (!order) {
+    notFound();
+  }
+
+  const isOwner = session.user?.email?.toLowerCase() === order.email.toLowerCase();
+  const isAdmin = (session.user as any)?.role === 'ADMIN';
+
+  if (!isOwner && !isAdmin) {
     notFound();
   }
 

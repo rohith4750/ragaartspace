@@ -42,30 +42,58 @@ export default function Navbar() {
               TRACK ORDER
             </Link>
           )}
-          {session && (
+          {(session?.user as any)?.role === 'ADMIN' && (
             <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
               <LayoutDashboard className="w-4 h-4" />
               DASHBOARD
             </Link>
           )}
-          {session && (
-            <button
-              onClick={() => signOut({ callbackUrl: '/' })}
-              className="text-xs uppercase bg-brand-dark/5 hover:bg-brand-dark/10 px-3 py-1.5 rounded-full transition-all flex items-center gap-1"
-            >
-              <LogOut className="w-3 h-3" />
-              Logout ({session.user?.name || 'Admin'})
-            </button>
+          {session ? (
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-brand-dark/60 font-semibold">Hi, {session.user?.name || 'User'}</span>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="text-xs uppercase bg-brand-dark/5 hover:bg-brand-dark/10 px-3 py-1.5 rounded-full transition-all flex items-center gap-1 cursor-pointer"
+              >
+                <LogOut className="w-3 h-3" />
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link href="/login" className="hover:text-brand-accent transition-colors text-xs font-bold uppercase tracking-widest">
+              Login / Sign Up
+            </Link>
           )}
         </div>
 
         {/* Action Icons */}
         <div className="flex items-center space-x-4">
           {/* Mobile Dashboard Link */}
-          {session && (
+          {(session?.user as any)?.role === 'ADMIN' && (
             <Link href="/dashboard" className="md:hidden text-brand-dark hover:text-brand-accent transition-colors">
               <LayoutDashboard className="w-5 h-5" />
             </Link>
+          )}
+
+          {!session && (
+            <Link href="/login" className="md:hidden text-xs font-semibold uppercase tracking-wider text-brand-accent hover:underline">
+              LOGIN
+            </Link>
+          )}
+
+          {session && (
+            <>
+              <Link href="/orders/track" className="md:hidden text-xs font-semibold uppercase tracking-wider text-brand-accent hover:underline">
+                TRACK
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="md:hidden text-brand-dark/70 hover:text-brand-accent p-1 cursor-pointer transition-colors"
+                aria-label="Logout"
+              >
+                <LogOut className="w-4.5 h-4.5" />
+              </button>
+            </>
           )}
 
           {/* Cart Trigger */}

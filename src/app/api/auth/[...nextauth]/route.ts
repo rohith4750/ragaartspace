@@ -1,5 +1,6 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 
@@ -8,6 +9,10 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || 'mock_google_id',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'mock_google_secret',
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -20,11 +25,15 @@ export const authOptions: NextAuthOptions = {
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: credentials.email.toLowerCase() },
         });
 
         if (!user) {
           throw new Error('No user found with this email');
+        }
+
+        if (!user.password) {
+          throw new Error('Please log in using your Google account');
         }
 
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
@@ -43,10 +52,38 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = (user as any).role;
+    async signIn({ user, account }) {
+      if (account?.provider === 'google') {
+        if (!user.email) return false;
+
+        const existing = await prisma.user.findUnique({
+          where: { email: user.email.toLowerCase() },
+        });
+
+        if (!existing) {
+          await prisma.user.create({
+            data: {
+              email: user.email.toLowerCase(),
+              name: user.name || 'Google User',
+              role: 'USER',
+              password: '',
+            },
+          });
+        }
+      }
+      return true;
+    },
+    async jwt({ token }) {
+      if (token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email.toLowerCase() },
+        });
+        if (dbUser) {
+          token.role = dbUser.role;
+          token.id = dbUser.id;
+        } else {
+          token.role = 'USER';
+        }
       }
       return token;
     },
@@ -59,7 +96,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/dashboard/login',
+    signIn: '/login',
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
