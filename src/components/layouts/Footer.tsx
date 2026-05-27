@@ -6,7 +6,14 @@ export default function Footer() {
     <footer className="w-full bg-brand-light border-t border-[#EAE3DB] py-12 px-6 mt-auto">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
-          <h3 className="font-serif text-xl tracking-wider text-brand-dark mb-4">RAAGA Artspace</h3>
+          <div className="flex items-center space-x-2.5 mb-4">
+            <img
+              src="/images/logo.jpg"
+              alt="RAAGA Artspace"
+              className="w-8 h-8 rounded-full object-cover border border-[#EAE3DB]"
+            />
+            <h3 className="font-serif text-xl tracking-wider text-brand-dark">RAAGA Artspace</h3>
+          </div>
           <p className="text-sm text-brand-dark/70 max-w-xs leading-relaxed">
             A digital sanctuary showcasing mindful, spiritual, and calming artwork. Designed to bring peaceful energy and soulful aesthetics into your home.
           </p>

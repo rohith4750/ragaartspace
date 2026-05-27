@@ -16,8 +16,13 @@ export default function Navbar() {
     <nav className="sticky top-0 z-40 w-full glass shadow-xs border-b border-[#EAE3DB] px-4 md:px-8 py-4 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="font-serif text-2xl tracking-widest text-brand-dark font-medium">
+        <Link href="/" className="flex items-center space-x-2.5 group">
+          <img
+            src="/images/logo.jpg"
+            alt="RAAGA Artspace"
+            className="w-10 h-10 rounded-full object-cover border border-[#EAE3DB] group-hover:scale-105 transition-transform duration-300"
+          />
+          <span className="font-serif text-xl md:text-2xl tracking-widest text-brand-dark font-medium group-hover:text-brand-accent transition-colors duration-300">
             RAAGA <span className="text-brand-accent text-lg">Artspace</span>
           </span>
         </Link>

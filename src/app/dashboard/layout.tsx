@@ -21,7 +21,12 @@ export default async function DashboardLayout({
       {/* Sidebar panel */}
       <aside className="w-full md:w-64 bg-brand-dark text-[#F4EFEB] flex flex-col border-b md:border-b-0 md:border-r border-[#EAE3DB] flex-shrink-0">
         {/* Brand / Logo */}
-        <div className="p-6 border-b border-[#F4EFEB]/10 flex items-center justify-between">
+        <div className="p-6 border-b border-[#F4EFEB]/10 flex items-center space-x-2.5">
+          <img
+            src="/images/logo.jpg"
+            alt="RAAGA Artspace"
+            className="w-8 h-8 rounded-full object-cover border border-white/20"
+          />
           <span className="font-serif text-lg tracking-widest font-semibold text-white">
             RAAGA <span className="text-brand-accent text-sm">Control</span>
           </span>
