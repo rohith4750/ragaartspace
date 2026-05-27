@@ -198,7 +198,7 @@ Create a `.env` file in the root directory:
 ```env
 DATABASE_URL="postgresql://postgres:newpassword@localhost:5432/ragaartspace?schema=public"
 NEXTAUTH_SECRET="y0ur_n3xtauth_s3cr3t_v3ry_secr3t_k3y"
-NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_URL="https://ragaart.space" # (Use http://localhost:3000 for local development)
 RAZORPAY_KEY_ID="rzp_test_mock_raaga_key"
 RAZORPAY_SECRET="rzp_test_mock_raaga_secret"
 ```
