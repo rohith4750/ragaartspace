@@ -20,7 +20,7 @@ export default function BlogPage() {
   const videos: BlogVideo[] = [
     {
       id: '1',
-      youtubeId: 'al3olQDT-tk', // Actual ID from the hover link
+      youtubeId: 'aI3olODT-tk',
       title: "Trust God's Plan ✨",
       description: "Whatever is coming into your life... maybe that is what you truly need. A detailed process video of hand-drawing a sacred geometric mandala.",
       category: 'Mandala Art',
@@ -28,7 +28,7 @@ export default function BlogPage() {
     },
     {
       id: '2',
-      youtubeId: 'mock_id_2', // Replace with real ID
+      youtubeId: 'TpFuRuQPooM',
       title: "Endless Creativity 🎨",
       description: "A gorgeous process sketch illustrating classical dance postures. Captured step-by-step with charcoal and pen strokes.",
       category: 'Classical Dance',
@@ -36,7 +36,7 @@ export default function BlogPage() {
     },
     {
       id: '3',
-      youtubeId: 'mock_id_3', // Replace with real ID
+      youtubeId: 'qkhKhNsscuU',
       title: "ఓం నమో వేంకటేశాయ 🕉",
       description: "Bringing spiritual devotion to life with an intricate drawing of Lord Venkateswara. Visual meditation process.",
       category: 'Spiritual Draw',
@@ -44,7 +44,7 @@ export default function BlogPage() {
     },
     {
       id: '4',
-      youtubeId: 'mock_id_4', // Replace with real ID
+      youtubeId: 'HELtW2Ttvg0',
       title: "A Pause From It All..",
       description: "A calming session of emotional scribble art. Slow down, breathe, and let the pen move with your feelings.",
       category: 'Scribble Art',
@@ -52,7 +52,7 @@ export default function BlogPage() {
     },
     {
       id: '5',
-      youtubeId: 'mock_id_5', // Replace with real ID
+      youtubeId: '4V4zc_ft83s',
       title: "Custom Bookmark Orders 💌",
       description: "Wrapping and preparing handmade custom bookmark orders for dispatch. Crafting art that follows you in your books.",
       category: 'Custom Art',
