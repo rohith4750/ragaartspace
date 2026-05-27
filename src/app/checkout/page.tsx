@@ -69,7 +69,7 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
     setPaymentStep('processing');
 
-    // Simulate Razorpay secure payment gateway modal transition
+
     setTimeout(async () => {
       try {
         // Place the orders in the database. Since orders are created one artwork at a time in our schema, 
@@ -279,9 +279,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="space-y-2">
                   <h3 className="font-serif text-xl text-brand-dark">Processing Payment</h3>
-                  <p className="text-xs text-brand-dark/60">
-                    Connecting to Razorpay secure checkout. Please do not close or reload this window...
-                  </p>
+                  <p className="text-xs text-brand-dark/60">Processing your order. Please wait...</p>
                 </div>
               </>
             ) : (
