@@ -30,9 +30,6 @@ export default function Footer() {
             <li>
               <Link href="/orders/track" className="hover:text-brand-accent transition-colors">Order Tracking</Link>
             </li>
-            <li>
-              <Link href="/dashboard" className="hover:text-brand-accent transition-colors">Admin Portal</Link>
-            </li>
           </ul>
         </div>
         <div>

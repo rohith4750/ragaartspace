@@ -40,10 +40,12 @@ export default function Navbar() {
           <Link href="/orders/track" className="hover:text-brand-accent transition-colors">
             TRACK ORDER
           </Link>
-          <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
-            <LayoutDashboard className="w-4 h-4" />
-            DASHBOARD
-          </Link>
+          {session && (
+            <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
+              <LayoutDashboard className="w-4 h-4" />
+              DASHBOARD
+            </Link>
+          )}
           {session && (
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
@@ -58,9 +60,11 @@ export default function Navbar() {
         {/* Action Icons */}
         <div className="flex items-center space-x-4">
           {/* Mobile Dashboard Link */}
-          <Link href="/dashboard" className="md:hidden text-brand-dark hover:text-brand-accent transition-colors">
-            <LayoutDashboard className="w-5 h-5" />
-          </Link>
+          {session && (
+            <Link href="/dashboard" className="md:hidden text-brand-dark hover:text-brand-accent transition-colors">
+              <LayoutDashboard className="w-5 h-5" />
+            </Link>
+          )}
 
           {/* Cart Trigger */}
           <button
