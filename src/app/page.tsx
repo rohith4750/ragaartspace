@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-brand-light border-b border-[#EAE3DB] py-20 px-6 text-center">
+      <section className="relative overflow-hidden bg-brand-light border-b border-[#EAE3DB] py-12 md:py-20 px-4 md:px-6 text-center">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="inline-flex items-center space-x-1.5 bg-[#EAE3DB]/80 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-brand-dark/80">
             <Sparkles className="w-3.5 h-3.5 text-brand-accent" />

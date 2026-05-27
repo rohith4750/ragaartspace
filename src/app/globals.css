@@ -56,3 +56,10 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--brand-accent-hover);
 }
+html, body {
+  overflow-x: hidden;
+}
+*:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}

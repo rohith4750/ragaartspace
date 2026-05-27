@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="w-full bg-brand-light border-t border-[#EAE3DB] py-12 px-6 mt-auto">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
+        <div className="text-center md:text-left">
           <div className="flex items-center space-x-2.5 mb-4">
             <img
               src="/images/logo.jpg"

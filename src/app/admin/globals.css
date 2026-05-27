@@ -1,0 +1,16 @@
+/* src/app/admin/globals.css */
+@import "../globals.css";
+
+/* Admin specific overrides */
+.admin-sidebar {
+  /* ensure it appears above content on mobile */
+  z-index: 20;
+}
+
+.admin-hamburger {
+  color: #fff;
+}
+
+.admin-overlay {
+  z-index: 10;
+}

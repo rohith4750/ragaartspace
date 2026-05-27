@@ -5,7 +5,7 @@ export default withAuth({
     authorized: ({ token }) => token?.role === 'ADMIN',
   },
   pages: {
-    signIn: '/dashboard/login',
+    signIn: '/login',
   },
 });
 

@@ -57,7 +57,7 @@ export default async function OrderPage({ params }: Props) {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-8 py-12 w-full flex-grow">
+    <div className="max-w-3xl mx-auto px-4 md:px-8 py-12 w-full flex-grow">
       {/* Return link */}
       <Link
         href="/"
@@ -111,7 +111,7 @@ export default async function OrderPage({ params }: Props) {
               const isCurrent = idx === currentStepIndex;
 
               return (
-                <div key={idx} className="flex md:flex-col items-center md:text-center space-x-4 md:space-x-0 md:space-y-3 relative z-10">
+                <div key={idx} className={`flex flex-col md:flex-row items-center md:text-center space-y-3 md:space-y-0 space-x-0 md:space-x-4 relative z-10`}>
                   {/* Step bubble */}
                   <div
                     className={`w-14 h-14 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${

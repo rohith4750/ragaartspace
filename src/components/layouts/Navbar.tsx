@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ShoppingBag, LayoutDashboard, LogOut, Compass, Play } from 'lucide-react';
+import { ShoppingBag, LayoutDashboard, LogOut, Compass, Play, Menu, X, ArrowLeft } from 'lucide-react';
 import { useCart } from '@/store/useCart';
 import { useSession, signOut } from 'next-auth/react';
 
 export default function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { cartItems, toggleCart } = useCart();
   const { data: session } = useSession();
   
@@ -27,6 +28,15 @@ export default function Navbar() {
           </span>
         </Link>
 
+        {/* Mobile Hamburger */}
+        <button
+          className="md:hidden flex items-center text-brand-dark hover:text-brand-accent transition-colors"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
         {/* Navigation Links */}
         <div className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wider text-brand-dark/80">
           <Link href="/" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
@@ -43,10 +53,16 @@ export default function Navbar() {
             </Link>
           )}
           {(session?.user as any)?.role === 'ADMIN' && (
-            <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
-              <LayoutDashboard className="w-4 h-4" />
-              DASHBOARD
-            </Link>
+            <>
+              <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
+                <LayoutDashboard className="w-4 h-4" />
+                DASHBOARD
+              </Link>
+              <Link href="/admin" className="hover:text-brand-accent transition-colors flex items-center gap-1.5 ml-4">
+                <LayoutDashboard className="w-4 h-4" />
+                ADMIN
+              </Link>
+            </>
           )}
           {session ? (
             <div className="flex items-center gap-3">
@@ -66,6 +82,54 @@ export default function Navbar() {
           )}
         </div>
 
+        {/* Mobile Navigation Menu */}
+        {isMenuOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm md:hidden z-50">
+            <div className="bg-white w-64 h-full shadow-xl p-6 flex flex-col space-y-4">
+              <button
+                className="self-end text-brand-dark"
+                onClick={() => setIsMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <Link href="/" className="flex items-center space-x-2 hover:text-brand-accent" onClick={() => setIsMenuOpen(false)}>
+                <Compass className="w-5 h-5" />
+                <span>Gallery</span>
+              </Link>
+              <Link href="/blog" className="flex items-center space-x-2 hover:text-brand-accent" onClick={() => setIsMenuOpen(false)}>
+                <Play className="w-5 h-5" />
+                <span>Blog</span>
+              </Link>
+              {session && (
+                <Link href="/orders/track" className="flex items-center space-x-2 hover:text-brand-accent" onClick={() => setIsMenuOpen(false)}>
+                  <ArrowLeft className="w-5 h-5" />
+                  <span>Track Order</span>
+                </Link>
+              )}
+              {(session?.user as any)?.role === 'ADMIN' && (
+                <Link href="/dashboard" className="flex items-center space-x-2 hover:text-brand-accent" onClick={() => setIsMenuOpen(false)}>
+                  <LayoutDashboard className="w-5 h-5" />
+                  <span>Dashboard</span>
+                </Link>
+              )}
+              {session ? (
+                <button
+                  onClick={() => { signOut({ callbackUrl: '/' }); setIsMenuOpen(false); }}
+                  className="flex items-center space-x-2 text-brand-dark hover:text-brand-accent"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Logout</span>
+                </button>
+              ) : (
+                <Link href="/login" className="flex items-center space-x-2 hover:text-brand-accent" onClick={() => setIsMenuOpen(false)}>
+                  <LogOut className="w-5 h-5" />
+                  <span>Login / Sign Up</span>
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
         {/* Action Icons */}
         <div className="flex items-center space-x-4">
           {/* Mobile Dashboard Link */}

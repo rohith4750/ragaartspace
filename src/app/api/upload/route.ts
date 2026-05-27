@@ -53,18 +53,25 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ imageUrl: uploadResult.secure_url });
     } else {
-      // Fallback: local disk storage for local dev when Cloudinary is not configured
-      const uploadDir = join(process.cwd(), 'public', 'uploads');
-      await mkdir(uploadDir, { recursive: true });
+      // Fallback: local disk storage for development only
+if (process.env.NODE_ENV === "production") {
+  // In production, we cannot write to the filesystem. Require Cloudinary.
+  return NextResponse.json(
+    { error: "File upload not supported in production without Cloudinary configuration" },
+    { status: 500 }
+  );
+}
+const uploadDir = join(process.cwd(), "public", "uploads");
+await mkdir(uploadDir, { recursive: true });
 
-      const timestamp = Date.now();
-      const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      const uniqueFileName = `${timestamp}_${cleanFileName}`;
-      const filePath = join(uploadDir, uniqueFileName);
+const timestamp = Date.now();
+const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, "_");
+const uniqueFileName = `${timestamp}_${cleanFileName}`;
+const filePath = join(uploadDir, uniqueFileName);
 
-      await writeFile(filePath, buffer);
+await writeFile(filePath, buffer);
 
-      return NextResponse.json({ imageUrl: `/uploads/${uniqueFileName}` });
+return NextResponse.json({ imageUrl: `/uploads/${uniqueFileName}` });
     }
   } catch (error: any) {
     console.error('Error uploading file:', error);
