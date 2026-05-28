@@ -61,16 +61,10 @@ export default function Navbar() {
             </Link>
           )}
           {(session?.user as any)?.role === 'ADMIN' && (
-            <>
               <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5 font-bold text-brand-accent">
                 <LayoutDashboard className="w-4 h-4" />
                 RAAGA CONTROL
               </Link>
-              <Link href="/admin" className="hover:text-brand-accent transition-colors flex items-center gap-1.5 ml-4">
-                <LayoutDashboard className="w-4 h-4" />
-                ADMIN
-              </Link>
-            </>
           )}
           {session ? (
             <div className="flex items-center gap-3">

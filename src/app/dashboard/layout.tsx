@@ -47,11 +47,11 @@ export default async function DashboardLayout({
   const isAdmin = userRole === 'ADMIN';
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-background">
-      {/* Sidebar panel */}
-      <aside className="w-full md:w-64 bg-brand-dark text-[#F4EFEB] flex flex-col border-b md:border-b-0 md:border-r border-[#EAE3DB] flex-shrink-0">
+    <div className="flex min-h-screen bg-background">
+      {/* ─── Fixed Sidebar ─── */}
+      <aside className="hidden md:flex md:w-64 flex-col fixed inset-y-0 left-0 z-30 bg-brand-dark text-[#F4EFEB] border-r border-[#EAE3DB]">
         {/* Brand / Logo */}
-        <div className="p-6 border-b border-[#F4EFEB]/10 flex items-center space-x-2.5">
+        <div className="p-6 border-b border-[#F4EFEB]/10 flex items-center space-x-2.5 flex-shrink-0">
           <img
             src="/images/logo.jpg"
             alt="RAAGA Artspace"
@@ -62,8 +62,8 @@ export default async function DashboardLayout({
           </span>
         </div>
 
-        {/* Links list */}
-        <nav className="flex-grow p-4 space-y-2 text-sm font-medium tracking-wide">
+        {/* Scrollable navigation links */}
+        <nav className="flex-grow p-4 space-y-1 text-sm font-medium tracking-wide overflow-y-auto">
           <Link
             href="/dashboard"
             className="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-accent/25 hover:text-white transition-all"
@@ -72,7 +72,6 @@ export default async function DashboardLayout({
             <span>Overview</span>
           </Link>
 
-          {/* MANAGER/ADMIN can manage catalog */}
           {['ADMIN', 'MANAGER'].includes(userRole) && (
             <Link
               href="/dashboard/artworks"
@@ -83,7 +82,6 @@ export default async function DashboardLayout({
             </Link>
           )}
 
-          {/* MANAGER/ADMIN can view/edit orders */}
           {['ADMIN', 'MANAGER'].includes(userRole) && (
             <Link
               href="/dashboard/orders"
@@ -110,14 +108,13 @@ export default async function DashboardLayout({
             <span>Reels</span>
           </Link>
 
-          {/* ADMIN only can manage users and roles */}
           {isAdmin && (
             <Link
               href="/dashboard/users"
               className="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-accent/25 hover:text-white transition-all"
             >
               <Users className="w-4 h-4 text-brand-accent" />
-              <span>Users & Roles</span>
+              <span>Users &amp; Roles</span>
             </Link>
           )}
 
@@ -132,17 +129,60 @@ export default async function DashboardLayout({
           </Link>
         </nav>
 
-        {/* Footer with logged in user status */}
-        <div className="p-4 border-t border-[#F4EFEB]/10 text-xs text-[#F4EFEB]/60 bg-black/10">
+        {/* Fixed user info footer inside sidebar */}
+        <div className="p-4 border-t border-[#F4EFEB]/10 text-xs text-[#F4EFEB]/60 bg-black/10 flex-shrink-0">
           <span className="block text-[#F4EFEB] font-semibold">{session.user?.name || 'Raaga Admin'}</span>
           <span className="block font-medium text-[10px] text-brand-accent/90 uppercase tracking-widest">{userRole}</span>
           <span className="block mt-0.5 opacity-80">{session.user?.email}</span>
         </div>
       </aside>
 
-      {/* Admin content frame */}
-      <main className="flex-grow p-6 md:p-10 overflow-y-auto bg-background/50">
-        <div className="max-w-7xl mx-auto w-full">
+      {/* ─── Mobile top bar (visible only on small screens) ─── */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-30 bg-brand-dark text-[#F4EFEB] flex items-center justify-between p-4 border-b border-[#F4EFEB]/10">
+        <div className="flex items-center space-x-2">
+          <img
+            src="/images/logo.jpg"
+            alt="RAAGA Artspace"
+            className="w-7 h-7 rounded-full object-cover border border-white/20"
+          />
+          <span className="font-serif text-base tracking-widest font-semibold text-white">
+            RAAGA <span className="text-brand-accent text-xs">Control</span>
+          </span>
+        </div>
+        <span className="text-[10px] text-brand-accent/90 uppercase tracking-widest font-medium">{userRole}</span>
+      </div>
+
+      {/* ─── Mobile bottom toolbar ─── */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-brand-dark border-t border-[#F4EFEB]/10 flex items-center justify-around py-2.5 px-2">
+        <Link href="/dashboard" className="flex flex-col items-center text-[#F4EFEB]/70 hover:text-white transition-colors">
+          <LayoutDashboard className="w-5 h-5 text-brand-accent" />
+          <span className="text-[9px] mt-0.5 tracking-wider">Overview</span>
+        </Link>
+        {['ADMIN', 'MANAGER'].includes(userRole) && (
+          <Link href="/dashboard/artworks" className="flex flex-col items-center text-[#F4EFEB]/70 hover:text-white transition-colors">
+            <Palette className="w-5 h-5 text-brand-accent" />
+            <span className="text-[9px] mt-0.5 tracking-wider">Artworks</span>
+          </Link>
+        )}
+        {['ADMIN', 'MANAGER'].includes(userRole) && (
+          <Link href="/dashboard/orders" className="flex flex-col items-center text-[#F4EFEB]/70 hover:text-white transition-colors">
+            <ShoppingBag className="w-5 h-5 text-brand-accent" />
+            <span className="text-[9px] mt-0.5 tracking-wider">Orders</span>
+          </Link>
+        )}
+        <Link href="/dashboard/shipments" className="flex flex-col items-center text-[#F4EFEB]/70 hover:text-white transition-colors">
+          <Truck className="w-5 h-5 text-brand-accent" />
+          <span className="text-[9px] mt-0.5 tracking-wider">Ship</span>
+        </Link>
+        <Link href="/" className="flex flex-col items-center text-[#F4EFEB]/70 hover:text-white transition-colors">
+          <ArrowLeft className="w-5 h-5" />
+          <span className="text-[9px] mt-0.5 tracking-wider">Store</span>
+        </Link>
+      </div>
+
+      {/* ─── Main content (scrollable, offset for fixed sidebar/toolbars) ─── */}
+      <main className="flex-grow md:ml-64 mt-14 md:mt-0 mb-16 md:mb-0 min-h-screen overflow-y-auto bg-background/50">
+        <div className="max-w-7xl mx-auto w-full p-6 md:p-10">
           {children}
         </div>
       </main>
