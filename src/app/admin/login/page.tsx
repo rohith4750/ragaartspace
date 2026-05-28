@@ -21,16 +21,17 @@ function AdminLoginPageContent() {
       const callbackUrl = searchParams.get('callbackUrl');
       const role = (session?.user as any)?.role;
       if (callbackUrl) {
-        router.push(callbackUrl);
+        window.location.href = callbackUrl;
       } else if (['ADMIN', 'MANAGER', 'STAFF'].includes(role)) {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       } else {
-        router.push('/');
+        window.location.href = '/';
       }
     }
   }, [status, session, router, searchParams]);
 
-  if (status === 'loading') {
+  // Show spinner while loading OR while already authenticated (redirect pending)
+  if (status === 'loading' || status === 'authenticated') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <Loader2 className="w-8 h-8 animate-spin text-brand-accent" />
