@@ -18,11 +18,8 @@ function AdminLoginPageContent() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      const callbackUrl = searchParams.get('callbackUrl');
       const role = (session?.user as any)?.role;
-      if (callbackUrl) {
-        window.location.href = callbackUrl;
-      } else if (['ADMIN', 'MANAGER', 'STAFF'].includes(role)) {
+      if (['ADMIN', 'MANAGER', 'STAFF'].includes(role)) {
         window.location.href = '/dashboard';
       } else {
         window.location.href = '/';
@@ -57,10 +54,7 @@ function AdminLoginPageContent() {
         const sessionRes = await fetch('/api/auth/session');
         const sessionData = await sessionRes.json();
         
-        const callbackUrl = searchParams.get('callbackUrl');
-        if (callbackUrl) {
-          window.location.href = callbackUrl;
-        } else if (['ADMIN', 'MANAGER', 'STAFF'].includes(sessionData?.user?.role)) {
+        if (['ADMIN', 'MANAGER', 'STAFF'].includes(sessionData?.user?.role)) {
           window.location.href = '/dashboard';
         } else {
           window.location.href = '/';
