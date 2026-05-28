@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/route';
-import { LayoutDashboard, Palette, ShoppingBag, ArrowLeft, Truck, Film, Users } from 'lucide-react';
+import { LayoutDashboard, Palette, ShoppingBag, ArrowLeft, Truck, Film, Users, Bell, Search, Globe, UserCircle } from 'lucide-react';
 
 export default async function DashboardLayout({
   children,
@@ -48,7 +48,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* ─── Fixed Sidebar ─── */}
+      {/* ─── Fixed Sidebar (Desktop) ─── */}
       <aside className="hidden md:flex md:w-64 flex-col fixed inset-y-0 left-0 z-30 bg-brand-dark text-[#F4EFEB] border-r border-[#EAE3DB]">
         {/* Brand / Logo */}
         <div className="p-6 border-b border-[#F4EFEB]/10 flex items-center space-x-2.5 flex-shrink-0">
@@ -118,6 +118,14 @@ export default async function DashboardLayout({
             </Link>
           )}
 
+          <Link
+            href="/dashboard/profile"
+            className="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-accent/25 hover:text-white transition-all"
+          >
+            <UserCircle className="w-4 h-4 text-brand-accent" />
+            <span>Profile</span>
+          </Link>
+
           <hr className="border-[#F4EFEB]/10 my-4" />
 
           <Link
@@ -129,7 +137,7 @@ export default async function DashboardLayout({
           </Link>
         </nav>
 
-        {/* Fixed user info footer inside sidebar */}
+        {/* User info footer inside sidebar */}
         <div className="p-4 border-t border-[#F4EFEB]/10 text-xs text-[#F4EFEB]/60 bg-black/10 flex-shrink-0">
           <span className="block text-[#F4EFEB] font-semibold">{session.user?.name || 'Raaga Admin'}</span>
           <span className="block font-medium text-[10px] text-brand-accent/90 uppercase tracking-widest">{userRole}</span>
@@ -137,7 +145,7 @@ export default async function DashboardLayout({
         </div>
       </aside>
 
-      {/* ─── Mobile top bar (visible only on small screens) ─── */}
+      {/* ─── Mobile top bar ─── */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-30 bg-brand-dark text-[#F4EFEB] flex items-center justify-between p-4 border-b border-[#F4EFEB]/10">
         <div className="flex items-center space-x-2">
           <img
@@ -180,8 +188,58 @@ export default async function DashboardLayout({
         </Link>
       </div>
 
-      {/* ─── Main content (scrollable, offset for fixed sidebar/toolbars) ─── */}
-      <main className="flex-grow md:ml-64 mt-14 md:mt-0 mb-16 md:mb-0 min-h-screen overflow-y-auto bg-background/50">
+      {/* ─── Desktop Top Toolbar (fixed) ─── */}
+      <header className="hidden md:flex fixed top-0 left-64 right-0 z-20 h-14 bg-white/80 backdrop-blur-md border-b border-[#EAE3DB] items-center justify-between px-8">
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-brand-dark/40" />
+            <input
+              type="text"
+              placeholder="Search orders, artworks..."
+              className="pl-9 pr-4 py-1.5 text-xs bg-brand-light border border-[#EAE3DB] rounded-full w-64 focus:outline-none focus:border-brand-accent text-brand-dark placeholder:text-brand-dark/40"
+            />
+          </div>
+        </div>
+        <div className="flex items-center space-x-5">
+          <button className="relative text-brand-dark/50 hover:text-brand-accent transition-colors">
+            <Bell className="w-4 h-4" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-accent rounded-full"></span>
+          </button>
+          <Link href="/" className="text-brand-dark/50 hover:text-brand-accent transition-colors" title="Visit Storefront">
+            <Globe className="w-4 h-4" />
+          </Link>
+          <div className="h-5 w-px bg-[#EAE3DB]"></div>
+          <div className="flex items-center space-x-2">
+            <div className="w-7 h-7 rounded-full bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center text-xs font-bold text-brand-accent">
+              {(session.user?.name || 'A').charAt(0).toUpperCase()}
+            </div>
+            <div className="text-xs">
+              <span className="block font-semibold text-brand-dark leading-tight">{session.user?.name || 'Admin'}</span>
+              <span className="block text-[10px] text-brand-dark/50 uppercase tracking-widest">{userRole}</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ─── Desktop Bottom Footer (fixed) ─── */}
+      <footer className="hidden md:flex fixed bottom-0 left-64 right-0 z-20 h-10 bg-white/80 backdrop-blur-md border-t border-[#EAE3DB] items-center justify-between px-8 text-[10px] text-brand-dark/40 tracking-wide">
+        <div className="flex items-center space-x-4">
+          <span>&copy; {new Date().getFullYear()} RAAGA Artspace</span>
+          <span className="text-brand-dark/20">|</span>
+          <span>Raaga Control v1.0</span>
+        </div>
+        <div className="flex items-center space-x-4">
+          <Link href="/" className="hover:text-brand-accent transition-colors flex items-center gap-1">
+            <Globe className="w-3 h-3" />
+            Storefront
+          </Link>
+          <span className="text-brand-dark/20">|</span>
+          <span className="text-brand-accent/70 font-semibold">{userRole}</span>
+        </div>
+      </footer>
+
+      {/* ─── Main content (offset for all fixed elements) ─── */}
+      <main className="flex-grow md:ml-64 mt-14 mb-16 md:mb-10 min-h-screen overflow-y-auto bg-background/50">
         <div className="max-w-7xl mx-auto w-full p-6 md:p-10">
           {children}
         </div>
