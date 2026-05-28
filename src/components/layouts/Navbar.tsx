@@ -5,11 +5,19 @@ import Link from 'next/link';
 import { ShoppingBag, LayoutDashboard, LogOut, Compass, Play, Menu, X, ArrowLeft } from 'lucide-react';
 import { useCart } from '@/store/useCart';
 import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { cartItems, toggleCart } = useCart();
   const { data: session } = useSession();
+  const pathname = usePathname();
+
+  const isControlCenter = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin');
+
+  if (isControlCenter) {
+    return null;
+  }
   
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -54,9 +62,9 @@ export default function Navbar() {
           )}
           {(session?.user as any)?.role === 'ADMIN' && (
             <>
-              <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5">
+              <Link href="/dashboard" className="hover:text-brand-accent transition-colors flex items-center gap-1.5 font-bold text-brand-accent">
                 <LayoutDashboard className="w-4 h-4" />
-                DASHBOARD
+                RAAGA CONTROL
               </Link>
               <Link href="/admin" className="hover:text-brand-accent transition-colors flex items-center gap-1.5 ml-4">
                 <LayoutDashboard className="w-4 h-4" />
@@ -110,7 +118,7 @@ export default function Navbar() {
               {(session?.user as any)?.role === 'ADMIN' && (
                 <Link href="/dashboard" className="flex items-center space-x-2 hover:text-brand-accent" onClick={() => setIsMenuOpen(false)}>
                   <LayoutDashboard className="w-5 h-5" />
-                  <span>Dashboard</span>
+                  <span>RAAGA Control</span>
                 </Link>
               )}
               {session ? (

@@ -17,6 +17,18 @@ export interface Artwork {
   createdAt: string | Date;
 }
 
+export interface Shipment {
+  id: string;
+  orderId: string;
+  courierPartner: string;
+  trackingId: string;
+  trackingUrl?: string | null;
+  shippedAt?: string | Date | null;
+  deliveredAt?: string | Date | null;
+  estimatedDate?: string | Date | null;
+  currentStatus: string;
+}
+
 export interface Order {
   id: string;
   customerName: string;
@@ -30,6 +42,7 @@ export interface Order {
   createdAt: string | Date;
   artworkId: string;
   artwork?: Artwork;
+  shipments?: Shipment[];
 }
 
 export interface CartItem {
@@ -43,4 +56,14 @@ export interface AnalyticsData {
   totalCustomers: number;
   pendingOrders: number;
   totalArtworks: number;
+}
+
+export interface Reel {
+  id: string;
+  youtubeId: string;
+  title: string;
+  description: string;
+  category: string;
+  views: string;
+  createdAt: string | Date;
 }

@@ -44,4 +44,28 @@ model Order {
 
   artworkId      String
   artwork        Artwork @relation(fields: [artworkId], references: [id])
+  shipments      Shipment[]
+}
+
+model Shipment {
+  id              String    @id @default(uuid())
+  orderId         String
+  courierPartner  String
+  trackingId      String
+  trackingUrl     String?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  estimatedDate   DateTime?
+  currentStatus   String    @default("Shipped")
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Reel {
+  id          String   @id @default(uuid())
+  youtubeId   String
+  title       String
+  description String
+  category    String
+  views       String   @default("0 views")
+  createdAt   DateTime @default(now())
 }

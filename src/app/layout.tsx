@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/layouts/Footer";
 import CartDrawer from "@/components/gallery/CartDrawer";
+import ZenSoundscape from "@/components/layouts/ZenSoundscape";
 import AuthProvider from "@/components/providers/AuthProvider";
 import QueryProvider from "@/components/providers/QueryProvider";
 
@@ -44,6 +45,7 @@ export default function RootLayout({
             </main>
             <Footer />
             <CartDrawer />
+            <ZenSoundscape />
           </QueryProvider>
         </AuthProvider>
       </body>

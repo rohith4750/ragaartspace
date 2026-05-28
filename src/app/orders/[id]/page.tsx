@@ -32,6 +32,7 @@ export default async function OrderPage({ params }: Props) {
     where: { id },
     include: {
       artwork: true,
+      shipments: true,
     },
   });
 
@@ -137,6 +138,53 @@ export default async function OrderPage({ params }: Props) {
             })}
           </div>
         </div>
+
+        {/* Shipment Details if shipped */}
+        {order.shipments?.[0] && (
+          <div className="bg-brand-light border border-[#EAE3DB] rounded-2xl p-6 space-y-4 font-sans text-brand-dark">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-brand-accent">Courier Shipment Details</span>
+                <h3 className="font-serif text-lg font-medium text-brand-dark flex items-center gap-2">
+                  <Truck className="w-5 h-5 text-brand-accent animate-pulse" />
+                  Shipped via {order.shipments[0].courierPartner}
+                </h3>
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="bg-white border border-[#EAE3DB] text-brand-dark px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
+                  Tracking ID: <span className="font-mono text-brand-accent select-all font-bold">{order.shipments[0].trackingId}</span>
+                </span>
+
+                {(() => {
+                  const getTrackingUrl = (partner: string, id: string) => {
+                    const p = partner.toLowerCase();
+                    if (p.includes('delhivery')) return `https://www.delhivery.com/track/package/${id}`;
+                    if (p.includes('dhl')) return `https://www.dhl.com/en/express/tracking.html?AWB=${id}`;
+                    if (p.includes('fedex')) return `https://www.fedex.com/apps/fedextrack/?tracknumbers=${id}`;
+                    if (p.includes('bluedart') || p.includes('blue dart')) return `https://www.bluedart.com/`;
+                    if (p.includes('dtdc')) return `https://www.dtdc.in/`;
+                    if (p.includes('speed post') || p.includes('india post')) return `https://www.indiapost.gov.in/`;
+                    // Fallback to Google search for carrier tracking
+                    return `https://www.google.com/search?q=${encodeURIComponent(partner + ' tracking ' + id)}`;
+                  };
+                  const trackingUrl = getTrackingUrl(order.shipments[0].courierPartner, order.shipments[0].trackingId);
+                  
+                  return (
+                    <a
+                      href={trackingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-brand-accent hover:bg-brand-accent-hover text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 shadow-xs cursor-pointer"
+                    >
+                      Track Package
+                    </a>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Order Details & Address Summary */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-[#F8F4EF]">

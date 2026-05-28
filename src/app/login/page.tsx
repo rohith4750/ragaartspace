@@ -62,7 +62,18 @@ function CombinedLoginPageContent() {
         setErrorMsg(res.error || 'Invalid credentials');
         setIsLoading(false);
       } else {
-        // Handled by useEffect redirect
+        // Fetch session info immediately to determine the user's role
+        const sessionRes = await fetch('/api/auth/session');
+        const sessionData = await sessionRes.json();
+        
+        const callbackUrl = searchParams.get('callbackUrl');
+        if (callbackUrl) {
+          window.location.href = callbackUrl;
+        } else if (['ADMIN', 'MANAGER', 'STAFF'].includes(sessionData?.user?.role)) {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = '/';
+        }
       }
     } catch (err: any) {
       setErrorMsg('Login failed. Please try again.');
@@ -108,6 +119,8 @@ function CombinedLoginPageContent() {
         setErrorMsg('Sign up succeeded but auto-login failed. Please sign in manually.');
         setActiveTab('login');
         setIsLoading(false);
+      } else {
+        window.location.href = '/';
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Signup failed. Please try again.');

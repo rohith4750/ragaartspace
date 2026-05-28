@@ -3,9 +3,17 @@
 import React from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
   const { data: session } = useSession();
+  const pathname = usePathname();
+
+  const isControlCenter = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin');
+
+  if (isControlCenter) {
+    return null;
+  }
 
   return (
     <footer className="w-full bg-brand-light border-t border-[#EAE3DB] py-12 px-6 mt-auto">

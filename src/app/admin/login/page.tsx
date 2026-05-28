@@ -18,13 +18,17 @@ function AdminLoginPageContent() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      if ((session?.user as any)?.role === 'ADMIN') {
-        router.push('/admin');
+      const callbackUrl = searchParams.get('callbackUrl');
+      const role = (session?.user as any)?.role;
+      if (callbackUrl) {
+        router.push(callbackUrl);
+      } else if (['ADMIN', 'MANAGER', 'STAFF'].includes(role)) {
+        router.push('/dashboard');
       } else {
         router.push('/');
       }
     }
-  }, [status, session, router]);
+  }, [status, session, router, searchParams]);
 
   if (status === 'loading') {
     return (
@@ -45,8 +49,21 @@ function AdminLoginPageContent() {
         redirect: false,
       });
       if (res?.error) {
-        setErrorMsg(res.error);
+        setErrorMsg(res.error || 'Invalid admin credentials');
         setIsLoading(false);
+      } else {
+        // Fetch session info immediately to determine the user's role
+        const sessionRes = await fetch('/api/auth/session');
+        const sessionData = await sessionRes.json();
+        
+        const callbackUrl = searchParams.get('callbackUrl');
+        if (callbackUrl) {
+          window.location.href = callbackUrl;
+        } else if (['ADMIN', 'MANAGER', 'STAFF'].includes(sessionData?.user?.role)) {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = '/';
+        }
       }
     } catch {
       setErrorMsg('Login failed. Please try again.');

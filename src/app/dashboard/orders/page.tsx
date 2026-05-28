@@ -13,6 +13,9 @@ export default function AdminOrdersPage() {
   const [editingOrderId, setEditingOrderId] = useState<string | null>(null);
   const [selectedOrderStatus, setSelectedOrderStatus] = useState('');
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState('');
+  const [selectedCourierPartner, setSelectedCourierPartner] = useState('');
+  const [selectedTrackingId, setSelectedTrackingId] = useState('');
+  const [isOtherCourier, setIsOtherCourier] = useState(false);
 
   // Fetch orders
   const { data: orders = [], isLoading, error } = useQuery<Order[]>({
@@ -26,11 +29,11 @@ export default function AdminOrdersPage() {
 
   // Mutation to update order
   const updateMutation = useMutation({
-    mutationFn: async ({ id, orderStatus, paymentStatus }: { id: string; orderStatus: string; paymentStatus: string }) => {
+    mutationFn: async ({ id, orderStatus, paymentStatus, courierPartner, trackingId }: { id: string; orderStatus: string; paymentStatus: string; courierPartner?: string; trackingId?: string }) => {
       const response = await fetch(`/api/orders/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderStatus, paymentStatus }),
+        body: JSON.stringify({ orderStatus, paymentStatus, courierPartner, trackingId }),
       });
       
       if (!response.ok) {
@@ -49,9 +52,16 @@ export default function AdminOrdersPage() {
   });
 
   const handleEditClick = (order: Order) => {
+    const standardCouriers = ['Delhivery', 'Blue Dart', 'DTDC', 'DHL', 'FedEx', 'Speed Post'];
     setEditingOrderId(order.id);
     setSelectedOrderStatus(order.orderStatus);
     setSelectedPaymentStatus(order.paymentStatus);
+    
+    const primaryShipment = order.shipments?.[0];
+    const courier = primaryShipment?.courierPartner || '';
+    setSelectedCourierPartner(courier);
+    setSelectedTrackingId(primaryShipment?.trackingId || '');
+    setIsOtherCourier(courier !== '' && !standardCouriers.includes(courier));
   };
 
   const handleSaveClick = (id: string) => {
@@ -59,6 +69,8 @@ export default function AdminOrdersPage() {
       id,
       orderStatus: selectedOrderStatus,
       paymentStatus: selectedPaymentStatus,
+      courierPartner: selectedOrderStatus === 'Shipped' || selectedOrderStatus === 'Delivered' ? selectedCourierPartner : '',
+      trackingId: selectedOrderStatus === 'Shipped' || selectedOrderStatus === 'Delivered' ? selectedTrackingId : '',
     });
   };
 
@@ -183,26 +195,81 @@ export default function AdminOrdersPage() {
                       {/* Order status */}
                       <td className="py-4">
                         {isEditing ? (
-                          <select
-                            value={selectedOrderStatus}
-                            onChange={(e) => setSelectedOrderStatus(e.target.value)}
-                            className="bg-brand-light border border-[#EAE3DB] rounded-lg px-2 py-1 text-xs text-brand-dark"
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="Processing">Processing</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                          </select>
+                          <div className="flex flex-col gap-1.5 min-w-[140px]">
+                            <select
+                              value={selectedOrderStatus}
+                              onChange={(e) => setSelectedOrderStatus(e.target.value)}
+                              className="bg-brand-light border border-[#EAE3DB] rounded-lg px-2 py-1 text-xs font-semibold text-brand-dark w-full"
+                            >
+                              <option value="Pending">Pending</option>
+                              <option value="Processing">Processing</option>
+                              <option value="Shipped">Shipped</option>
+                              <option value="Delivered">Delivered</option>
+                            </select>
+
+                            {(selectedOrderStatus === 'Shipped' || selectedOrderStatus === 'Delivered') && (
+                              <div className="space-y-1.5 mt-1 border-t border-[#EAE3DB]/40 pt-1.5">
+                                <select
+                                  value={isOtherCourier ? 'Other' : selectedCourierPartner}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val === 'Other') {
+                                      setIsOtherCourier(true);
+                                      setSelectedCourierPartner('');
+                                    } else {
+                                      setIsOtherCourier(false);
+                                      setSelectedCourierPartner(val);
+                                    }
+                                  }}
+                                  className="bg-brand-light border border-[#EAE3DB] rounded-lg px-2 py-1 text-[11px] text-brand-dark w-full font-sans"
+                                >
+                                  <option value="">Select Courier...</option>
+                                  <option value="Delhivery">Delhivery</option>
+                                  <option value="Blue Dart">Blue Dart</option>
+                                  <option value="DTDC">DTDC</option>
+                                  <option value="DHL">DHL Express</option>
+                                  <option value="FedEx">FedEx</option>
+                                  <option value="Speed Post">Speed Post</option>
+                                  <option value="Other">Other...</option>
+                                </select>
+                                
+                                {isOtherCourier && (
+                                  <input
+                                    type="text"
+                                    placeholder="Courier Name"
+                                    value={selectedCourierPartner}
+                                    onChange={(e) => setSelectedCourierPartner(e.target.value)}
+                                    className="bg-brand-light border border-[#EAE3DB] rounded-lg px-2 py-1 text-[11px] text-brand-dark w-full"
+                                  />
+                                )}
+
+                                <input
+                                  type="text"
+                                  placeholder="Tracking ID"
+                                  value={selectedTrackingId}
+                                  onChange={(e) => setSelectedTrackingId(e.target.value)}
+                                  className="bg-brand-light border border-[#EAE3DB] rounded-lg px-2 py-1 text-[11px] text-brand-dark w-full"
+                                />
+                              </div>
+                            )}
+                          </div>
                         ) : (
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                            order.orderStatus === 'Pending'
-                              ? 'bg-amber-100 text-amber-800'
-                              : order.orderStatus === 'Delivered'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-blue-100 text-blue-800'
-                          }`}>
-                            {order.orderStatus}
-                          </span>
+                          <div className="space-y-1">
+                            <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                              order.orderStatus === 'Pending'
+                                ? 'bg-amber-100 text-amber-800'
+                                : order.orderStatus === 'Delivered'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-blue-100 text-blue-800'
+                            }`}>
+                              {order.orderStatus}
+                            </span>
+                            {order.shipments?.[0] && (
+                              <span className="block text-[10px] text-brand-dark/60 font-sans mt-0.5">
+                                {order.shipments[0].courierPartner} {order.shipments[0].trackingId ? `#${order.shipments[0].trackingId}` : ''}
+                              </span>
+                            )}
+                          </div>
                         )}
                       </td>
 
